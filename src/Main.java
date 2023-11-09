@@ -16,6 +16,9 @@ public class Main {
         trie.insert("egg");
         System.out.println(trie.findWords(""));
         System.out.println(trie.countWords());
+
+        String[] array = {"car"};
+        System.out.println(Trie.longestCommonPrefix(array));
     }
 
     

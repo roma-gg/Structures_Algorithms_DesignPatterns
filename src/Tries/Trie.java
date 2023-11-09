@@ -160,6 +160,32 @@ public class Trie {
         return sum;
     }
 
+    public static String longestCommonPrefix (String[] words) {
+        if (words == null)
+            return "";
+
+        var trie = new Trie();
+        for (var each : words)
+            trie.insert(each);
+
+        return longestCommonPrefix(trie.root, "");
+    }
+
+    private static String longestCommonPrefix (Node node, String prefix) {
+        if (node.getChildren().length != 1 || node.isEndOfWord)
+            return prefix;
+
+        Node child = null;
+        String appendedPrefix = prefix;
+        for (var each : node.getChildren()) {
+            child = each;
+            appendedPrefix += each.ch;
+        }
+
+        return longestCommonPrefix(child, appendedPrefix);
+
+    }
+
 
 
 
