@@ -15,6 +15,7 @@ public class Main {
         trie.insert("careful");
         trie.insert("egg");
         System.out.println(trie.findWords(""));
+        System.out.println(trie.countWords());
     }
 
     

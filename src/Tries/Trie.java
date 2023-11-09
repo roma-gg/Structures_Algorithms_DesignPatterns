@@ -37,6 +37,10 @@ public class Trie {
         private void removeChild(char ch) {
             children.remove(ch);
         }
+
+        private Node[] getChildren() {
+            return children.values().toArray(new Node[0]);
+        }
     }
 
     private Node root = new Node(' ');
@@ -137,8 +141,26 @@ public class Trie {
         }
     }
 
+    public int countWords() {
+        if (root == null)
+            return 0;
 
-    //after initial word iterate children -> call findwords for each. If isLeaf - add word to the list.
+        return countWords(root);
+    }
+
+    private int countWords(Node node) {
+        int sum = 0;
+        if (node.isEndOfWord)
+            sum = 1;
+
+        for (var each : node.getChildren()) {
+            sum += countWords(each);
+        }
+
+        return sum;
+    }
+
+
 
 
 
