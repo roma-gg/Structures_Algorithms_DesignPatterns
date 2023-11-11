@@ -7,19 +7,7 @@ public class Graph {
     private Map mapLabel = new HashMap<String, Integer>();
     private Map mapIndex = new HashMap<Integer, String>();
 
-    //array with linked lists
-    //nodes and it's indexes in hashmap
-    private class Node {
-        private String label;
-
-        public Node(String label) {
-            this.label = label;
-        }
-    }
-
-    // O(1) hashmap traversing
-    // O(1) hashmap.add
-    // 0(1) arraylist.add
+    // O(1)
     public void addNode(String label) {
         if (label == null)
             throw new IllegalArgumentException();
@@ -31,40 +19,23 @@ public class Graph {
         }
     }
 
-    // O(1) traversing hashmap
-    // 0(1) removing from map
-    // O(1) removing from arraylist with index
-    // O(V2) removing edges
-
-    // lists:
-    // 0 -> 1, 2;
-    // 1 -> ;
-    // 2 -> 0;
-
-    //mapLabel
-    //keys  "A", "B", "C", "D";
-    //value  0    1    2    3
-    //            ^
-
-    //mapIndex
-    //keys   0    1    2    3
-    //value "A", "B", "C", "D";
-    //            ^
-
+    //O(V2)
     public void removeNode(String label) {
         if (mapLabel.containsKey(label)) {
             int index = (int) mapLabel.get(label);
             mapLabel.remove(label);
+            //O(V)
             shiftElementsMapLabel(index);
+            //O(V)
             shiftElementsMapIndex(index);
-
             list.remove(index);
-
+            //O(V)
             for (var each : list) {
                 each.removeIf(m -> m == index);
             }
 
-            shiftLinkedLists(index);
+            // O(V2)
+            shiftEdges(index);
         }
     }
 
@@ -76,7 +47,6 @@ public class Graph {
         }
     }
 
-    //not sure about removing during iteration;
     private void shiftElementsMapIndex(int index) {
         for (var each : mapIndex.keySet()) {
             int keyIndex = (int)each;
@@ -87,7 +57,7 @@ public class Graph {
         }
     }
 
-    private void shiftLinkedLists(int index) {
+    private void shiftEdges(int index) {
         for (var each : list) {
             for (var value : each) {
                 if (value > index) {
@@ -98,8 +68,7 @@ public class Graph {
         }
     }
 
-    // O(1) traversing maps
-    // 0(1) adding to the LinkedList
+    // 0(1)
     public void addEdge(String from, String to) {
         if (mapLabel.containsKey(from) && mapLabel.containsKey(to)) {
             int indexFrom = (int) mapLabel.get(from);
@@ -108,8 +77,7 @@ public class Graph {
         }
     }
 
-    // O(1) traversing maps
-    // 0(n) removing from the LinkedList
+    // 0(V) removing from the LinkedList
     public void removeEdge(String from, String to) {
         if (mapLabel.containsKey(from) && mapLabel.containsKey(to)) {
             int indexFrom = (int) mapLabel.get(from);
@@ -119,7 +87,6 @@ public class Graph {
     }
 
     // O(V2)   because O(V) traversing map * O(V) traversing LinkedList
-
     public void print() {
         for (var each : mapLabel.keySet()) {
             int index = (int)mapLabel.get(each);
