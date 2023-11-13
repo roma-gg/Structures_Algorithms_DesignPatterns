@@ -9,8 +9,9 @@ public class Main {
         graph.addNode("C");
         graph.addEdge("A", "B", 3);
         graph.addEdge("A", "C", 2);
-        graph.addEdge("A", "C", 2);
+
         graph.print();
+
 
 
     }

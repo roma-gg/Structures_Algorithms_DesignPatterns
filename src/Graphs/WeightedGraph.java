@@ -9,9 +9,22 @@ public class WeightedGraph {
     private class Node {
 
         private String label;
+
+        public List<Edge> getEdges() {
+            return edges;
+        }
+
+        private List<Edge> edges = new ArrayList<>();
+
         public Node(String label) {
             this.label = label;
         }
+
+        public void addEdge(Node to, int weight) {
+            var edge = new Edge(this, to, weight);
+            edges.add(edge);
+        }
+
 
         @Override
         public String toString() {
@@ -36,13 +49,10 @@ public class WeightedGraph {
     }
 
     private Map<String, Node> nodes = new HashMap<>();
-    private Map<Node, List<Edge>> adjacencyList = new HashMap<>();
 
 
     public void addNode(String label) {
-        var node = new Node(label);
-        nodes.putIfAbsent(label, node);
-        adjacencyList.putIfAbsent(node, new ArrayList<>());
+        nodes.putIfAbsent(label, new Node(label));
     }
 
     public void addEdge(String from, String to, int weight) {
@@ -54,15 +64,16 @@ public class WeightedGraph {
 
         var edge = new Edge(fromNode, toNode, weight);
         var edgeReversed = new Edge(toNode, fromNode, weight);
-        adjacencyList.get(fromNode).add(edge);
-        adjacencyList.get(toNode).add(edgeReversed);
+        fromNode.addEdge(toNode, weight);
+        toNode.addEdge(fromNode, weight);
     }
 
     public void print() {
-        for (var source : adjacencyList.keySet()) {
-            var targets = adjacencyList.get(source);
-            if (!targets.isEmpty())
-                System.out.println(source + " is connected to " + targets);
+        for (var node : nodes.values()) {
+            var edges = node.getEdges();
+            if (!edges.isEmpty()) {
+                System.out.println(node + " connected with " + edges);
+            }
         }
     }
 }
