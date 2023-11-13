@@ -131,4 +131,112 @@ public class GraphMosh {
             }
         }
     }
+
+    public List<String> topologicalSort() {
+        var list = new ArrayList<String>();
+        var stack = new Stack<String>();
+        var visited = new HashSet<Node>();
+
+        for (var each : nodes.values()) {
+            topologicalSort(each, stack, visited);
+        }
+
+        while (!stack.isEmpty()) {
+            list.add(stack.pop());
+        }
+
+        return list;
+
+    }
+
+    private void topologicalSort(Node node, Stack<String> stack, HashSet<Node> visited) {
+        if (visited.contains(node))
+            return;
+
+        visited.add(node);
+
+        for (var each : adjacencyList.get(node)) {
+            topologicalSort(each, stack, visited);
+        }
+
+        stack.push(node.label);
+
+    }
+
+    public boolean hasCycle() {
+        var visiting = new HashSet<Node>();
+        var visited = new HashSet<Node>();
+        var all = new HashSet<Node>(nodes.values());
+
+        var temp = Set.copyOf(all);
+        for (var each : temp) {
+            hasCycle(each, all, visiting, visited);
+        }
+
+        return !visiting.isEmpty();
+    }
+
+    private void hasCycle(Node node, HashSet<Node> all, HashSet<Node> visiting, HashSet<Node> visited) {
+        //if node is leaf, removing from all (in case if node is root) and from visiting;
+        if (adjacencyList.get(node).isEmpty()) {
+            all.remove(node);
+            visiting.remove(node);
+            visited.add(node);
+        }
+
+        //if node is already in visiting - it's a cycle;
+        if (visiting.contains(node))
+            return;
+        //if node is in all - it's a first touch, moving to visiting and checking children;
+        if (all.contains(node)) {
+            visiting.add(node);
+            all.remove(node);
+            for (var each : adjacencyList.get(node)) {
+                hasCycle(each, all, visiting, visited);
+            }
+        }
+
+        //after checking children - if all are visited - node is visited as well, if not - there is a cycle;
+        if (visited.containsAll(adjacencyList.get(node))) {
+            visiting.remove(node);
+            visited.add(node);
+        }
+    }
+
+    public boolean hasCycleMosh() {
+        var visiting = new HashSet<Node>();
+        var visited = new HashSet<Node>();
+        var all = new HashSet<Node>(nodes.values());
+
+        while(!all.isEmpty()) {
+            var current = (Node)all.toArray()[0];
+            if (hasCycleMosh(current, all, visiting, visited))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean hasCycleMosh(Node node, HashSet<Node> all, HashSet<Node> visiting, HashSet<Node> visited) {
+        all.remove(node);
+        visiting.add(node);
+
+        for (var each : adjacencyList.get(node)) {
+            if (visited.contains(node))
+                continue;
+
+            if (visiting.contains(each))
+                return true;
+
+            if (hasCycleMosh(each, all, visiting, visited))
+                return true;
+
+        }
+
+        visiting.remove(node);
+        visited.remove(node);
+
+        return false;
+    }
+
+
 }

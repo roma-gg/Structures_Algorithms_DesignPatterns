@@ -8,13 +8,11 @@ public class Main {
         graph.addNode("C");
         graph.addNode("D");
         graph.addEdge("A", "B");
+        graph.addEdge("B", "C");
         graph.addEdge("A", "C");
-        graph.addEdge("B", "D");
-        graph.addEdge("D", "C");
+        graph.addEdge("D", "A");
 
-        graph.traverseBFSIter("D");
-
-
+        System.out.println(graph.hasCycle());
 
 
     }
