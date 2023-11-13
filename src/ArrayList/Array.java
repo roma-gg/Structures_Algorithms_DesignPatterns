@@ -1,5 +1,6 @@
+package ArrayList;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Array {
     int[] array;
