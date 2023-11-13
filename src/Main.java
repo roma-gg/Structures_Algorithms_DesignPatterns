@@ -1,18 +1,16 @@
 import Graphs.GraphMosh;
+import Graphs.WeightedGraph;
 
 public class Main {
     public static void main(String[] args) {
-        var graph = new GraphMosh();
+        var graph = new WeightedGraph();
         graph.addNode("A");
         graph.addNode("B");
         graph.addNode("C");
-        graph.addNode("D");
-        graph.addEdge("A", "B");
-        graph.addEdge("B", "C");
-        graph.addEdge("A", "C");
-        graph.addEdge("D", "A");
-
-        System.out.println(graph.hasCycle());
+        graph.addEdge("A", "B", 3);
+        graph.addEdge("A", "C", 2);
+        graph.addEdge("A", "C", 2);
+        graph.print();
 
 
     }

@@ -55,14 +55,6 @@ public class GraphMosh {
         adjacencyList.get(fromNode).remove(toNode);
     }
 
-    public void print() {
-        for (var source : adjacencyList.keySet()) {
-            var targets = adjacencyList.get(source);
-            if (!targets.isEmpty())
-                System.out.println(source + " is connected to " + targets);
-        }
-    }
-
     public HashSet<String> traverseDFSRec(String label) {
         if (label == null)
             throw new IllegalArgumentException();
@@ -236,6 +228,14 @@ public class GraphMosh {
         visited.remove(node);
 
         return false;
+    }
+
+    public void print() {
+        for (var source : adjacencyList.keySet()) {
+            var targets = adjacencyList.get(source);
+            if (!targets.isEmpty())
+                System.out.println(source + " is connected to " + targets);
+        }
     }
 
 
