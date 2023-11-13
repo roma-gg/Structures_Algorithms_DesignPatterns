@@ -1,24 +1,26 @@
-import AbstractionTest.AbstractClass;
-import AbstractionTest.AbstractionTest;
-import Tries.Trie;
+import Graphs.Graph;
+import Graphs.GraphMosh;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
-        var trie = new Trie();
-        trie.insert("car");
-        trie.insert("card");
-        trie.insert("care");
-        trie.insert("careful");
-        trie.insert("egg");
-        System.out.println(trie.findWords(""));
-        System.out.println(trie.countWords());
+        var graph = new GraphMosh();
+        graph.addNode("Ballyclare");
+        graph.addNode("Antrim");
+        graph.addNode("Belfast");
+        graph.addEdge("Ballyclare", "Antrim");
+        graph.addEdge("Ballyclare", "Belfast");
+        graph.addEdge("Belfast", "Ballyclare");
 
-        String[] array = {"car"};
-        System.out.println(Trie.longestCommonPrefix(array));
+        graph.print();
+        System.out.println("======================");
+        graph.removeNode("Belfast");
+        graph.print();
+
+
+
+
     }
 
     
