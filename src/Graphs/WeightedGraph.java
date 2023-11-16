@@ -73,24 +73,16 @@ public class WeightedGraph {
         toNode.addEdge(fromNode, weight);
     }
 
-    // map Node, Integer distances
-    // map Node, Node previousNodes
-    // for each neighbour
-    // if found shorter path
-    // update distances table
-    // push neighbour to queue
-
     public int getShortestDistance(String from, String to) {
-        PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparing(m -> m.priority));
         var distances = new HashMap<Node, Integer>();
-        var previousNode = new HashMap<Node, Node>();
-
         for (var node : nodes.values()) {
             distances.put(node, Integer.MAX_VALUE);
         }
-
         var fromNode = nodes.get(from);
         distances.put(fromNode, 0);
+
+        PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparing(m -> m.priority));
+        var previousNode = new HashMap<Node, Node>();
 
         getShortestDistance(fromNode, distances, previousNode, queue);
 
@@ -107,7 +99,7 @@ public class WeightedGraph {
         for (var edge : current.getEdges()) {
             Node child = edge.to;
 
-            int distanceToChild = edge.weight + getDistanceFromStart(current, distances, previousNode);
+            int distanceToChild = edge.weight + distances.get(current);
 
             if (!previousNode.containsValue(child) && distances.get(child) > distanceToChild) {
                 distances.put(child, distanceToChild);
@@ -121,26 +113,6 @@ public class WeightedGraph {
         }
     }
 
-    // B 1 E
-    // D 5 E
-    //
-
-    //getting shortest distance to the child Node
-    private int getDistanceFromStart(Node current, Map<Node, Integer> distances, Map<Node, Node> previousNode) {
-        int distance = 0;
-        while (previousNode.containsKey(current) &&
-                distances.get(current) != Integer.MAX_VALUE) {
-            distance += distances.get(current);
-            current = previousNode.get(current);
-        }
-        return distance;
-    }
-
-    private void clearDistanceTrace(HashMap<Node, Integer> distances, Map<Node, Node> previousNode, PriorityQueue<NodeEntry> queue) {
-        distances.clear();
-        previousNode.clear();
-        queue.clear();
-    }
 
 
 
