@@ -112,6 +112,9 @@ public class WeightedGraph {
     }
 
     private ArrayList<String> getShortestPath(String from, String to, Map<Node, Integer> distances,Map<Node, Node> previousNode) {
+        if (from == null || to == null || !nodes.containsKey(from) || !nodes.containsKey(to))
+            throw new IllegalArgumentException();
+
         var current = nodes.get(to);
         var fromNode = nodes.get(from);
         var shortestPath = new ArrayList<String>();
@@ -121,6 +124,31 @@ public class WeightedGraph {
         }
 
         return shortestPath;
+    }
+
+    public boolean hasCycle() {
+        var visited = new HashMap<String, Node>();
+        for (var parent : nodes.values()) {
+            if (!visited.containsKey(parent.label)) {
+                if (hasCycle(parent, parent, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCycle (Node current, Node previous, Map<String, Node> visited) {
+        visited.put(current.label, current);
+        for (var edge : current.getEdges()) {
+            var child = edge.to;
+            if (child.label.equals(previous.label))
+                continue;
+            if (visited.containsKey(child.label))
+                return true;
+            if (hasCycle(child, current, visited))
+                return true;
+        }
+        return false;
     }
 
     public void print() {
