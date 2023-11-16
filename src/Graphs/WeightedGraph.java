@@ -73,7 +73,7 @@ public class WeightedGraph {
         toNode.addEdge(fromNode, weight);
     }
 
-    public int getShortestDistance(String from, String to) {
+    public Map<ArrayList<String>, Integer> getShortestPath(String from, String to) {
         var distances = new HashMap<Node, Integer>();
         for (var node : nodes.values()) {
             distances.put(node, Integer.MAX_VALUE);
@@ -86,19 +86,18 @@ public class WeightedGraph {
 
         getShortestDistance(fromNode, distances, previousNode, queue);
 
-        var toNode = nodes.get(to);
-        return distances.get(toNode);
+        var shortestPath = getShortestPath(from, to, distances, previousNode);
+        var shortestDistance = distances.get(nodes.get(to));
+        var result = new HashMap<ArrayList<String>, Integer>();
+        result.put(shortestPath, shortestDistance);
 
-
+        return result;
     }
 
-    //from A to D
     private void getShortestDistance(Node current, Map<Node, Integer> distances,
                                      Map<Node, Node> previousNode, PriorityQueue<NodeEntry> queue) {
-
         for (var edge : current.getEdges()) {
             Node child = edge.to;
-
             int distanceToChild = edge.weight + distances.get(current);
 
             if (!previousNode.containsValue(child) && distances.get(child) > distanceToChild) {
@@ -107,14 +106,22 @@ public class WeightedGraph {
                 queue.add(new NodeEntry(child, distanceToChild));
             }
         }
-
         while (!queue.isEmpty()) {
             getShortestDistance(queue.remove().node, distances, previousNode, queue);
         }
     }
 
+    private ArrayList<String> getShortestPath(String from, String to, Map<Node, Integer> distances,Map<Node, Node> previousNode) {
+        var current = nodes.get(to);
+        var fromNode = nodes.get(from);
+        var shortestPath = new ArrayList<String>();
+        while (current != null) {
+            shortestPath.add(0, current.label);
+            current = previousNode.get(current);
+        }
 
-
+        return shortestPath;
+    }
 
     public void print() {
         for (var node : nodes.values()) {

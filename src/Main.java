@@ -1,4 +1,3 @@
-import Graphs.GraphMosh;
 import Graphs.WeightedGraph;
 
 public class Main {
@@ -19,9 +18,7 @@ public class Main {
         graph.addEdge("D", "E", 5);
         graph.addEdge("E", "G", 5);
 
-        System.out.println(graph.getShortestDistance("E", "C"));
-
-
+        System.out.println(graph.getShortestPath("A", "G"));
 
 
     }
