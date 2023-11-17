@@ -3,8 +3,8 @@ package Graphs;
 import java.util.*;
 
 public class WeightedGraph {
-    private class Node {
 
+    private class Node {
         private String label;
         private List<Edge> edges = new ArrayList<>();
 
@@ -27,6 +27,7 @@ public class WeightedGraph {
         }
 
     }
+
     private class Edge {
         private Node from;
         private Node to;
@@ -54,7 +55,6 @@ public class WeightedGraph {
     }
 
     private Map<String, Node> nodes = new HashMap<>();
-
 
     public void addNode(String label) {
         nodes.putIfAbsent(label, new Node(label));
@@ -112,6 +112,9 @@ public class WeightedGraph {
     }
 
     private ArrayList<String> getShortestPath(String from, String to, Map<Node, Integer> distances,Map<Node, Node> previousNode) {
+        if (from == null || to == null || !nodes.containsKey(from) || !nodes.containsKey(to))
+            throw new IllegalArgumentException();
+
         var current = nodes.get(to);
         var fromNode = nodes.get(from);
         var shortestPath = new ArrayList<String>();
@@ -121,6 +124,72 @@ public class WeightedGraph {
         }
 
         return shortestPath;
+    }
+
+    public boolean hasCycle() {
+        var visited = new HashMap<String, Node>();
+        for (var parent : nodes.values()) {
+            if (!visited.containsKey(parent.label)) {
+                if (hasCycle(parent, parent, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCycle (Node current, Node previous, Map<String, Node> visited) {
+        visited.put(current.label, current);
+        for (var edge : current.getEdges()) {
+            var child = edge.to;
+            if (child.label.equals(previous.label))
+                continue;
+            if (visited.containsKey(child.label))
+                return true;
+            if (hasCycle(child, current, visited))
+                return true;
+        }
+        return false;
+    }
+
+    public WeightedGraph getMinSpanningTree() {
+        var minSpanningTree = new WeightedGraph();
+        var start = nodes.values().iterator().next();
+        minSpanningTree.addNode(start.label);
+
+        PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparing(m -> m.priority));
+        getMinSpanningTree(start, minSpanningTree, queue);
+
+        return minSpanningTree;
+    }
+
+    private void getMinSpanningTree(Node node, WeightedGraph graph, PriorityQueue<NodeEntry> queue) {
+        //adding all unvisited childs to the queue
+        for (var edge : node.getEdges()) {
+            var child = edge.to;
+            if (!graph.containsNode(child))
+                queue.add(new NodeEntry(child, edge.weight));
+        }
+
+        //if nothing to add - we visited all;
+        if (queue.isEmpty())
+            return;
+
+        //filtering out visited nodes
+        var nextNodeEntry = queue.remove();
+        while (!queue.isEmpty() && graph.containsNode(nextNodeEntry.node)) {
+            nextNodeEntry = queue.remove();
+        }
+
+        var nextNode = nextNodeEntry.node;
+        if (!graph.nodes.containsKey(nextNode.label)) {
+            graph.addNode(nextNode.label);
+            graph.addEdge(node.label, nextNode.label, nextNodeEntry.priority);
+            getMinSpanningTree(nextNode, graph, queue);
+        }
+    }
+
+    private boolean containsNode(Node node) {
+        return nodes.containsKey(node.label);
     }
 
     public void print() {
