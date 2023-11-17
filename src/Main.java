@@ -9,15 +9,14 @@ public class Main {
         graph.addNode("D");
 
         graph.addEdge("A", "B", 3);
-        graph.addEdge("B", "C", 4);
-        graph.addEdge("A", "D", 4);
+        graph.addEdge("A", "C", 1);
+        graph.addEdge("B", "C", 2);
+        graph.addEdge("B", "D", 4);
+        graph.addEdge("D", "C", 5);
 
-        System.out.println(graph.hasCycle());
 
-
-        // A - B
-        // I   I
-        // D   C
+        var minSpanTree = graph.getMinSpanningTree();
+        minSpanTree.print();
 
     }
 

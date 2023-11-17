@@ -3,8 +3,8 @@ package Graphs;
 import java.util.*;
 
 public class WeightedGraph {
-    private class Node {
 
+    private class Node {
         private String label;
         private List<Edge> edges = new ArrayList<>();
 
@@ -27,6 +27,7 @@ public class WeightedGraph {
         }
 
     }
+
     private class Edge {
         private Node from;
         private Node to;
@@ -54,7 +55,6 @@ public class WeightedGraph {
     }
 
     private Map<String, Node> nodes = new HashMap<>();
-
 
     public void addNode(String label) {
         nodes.putIfAbsent(label, new Node(label));
@@ -149,6 +149,47 @@ public class WeightedGraph {
                 return true;
         }
         return false;
+    }
+
+    public WeightedGraph getMinSpanningTree() {
+        var minSpanningTree = new WeightedGraph();
+        var start = nodes.values().iterator().next();
+        minSpanningTree.addNode(start.label);
+
+        PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparing(m -> m.priority));
+        getMinSpanningTree(start, minSpanningTree, queue);
+
+        return minSpanningTree;
+    }
+
+    private void getMinSpanningTree(Node node, WeightedGraph graph, PriorityQueue<NodeEntry> queue) {
+        //adding all unvisited childs to the queue
+        for (var edge : node.getEdges()) {
+            var child = edge.to;
+            if (!graph.containsNode(child))
+                queue.add(new NodeEntry(child, edge.weight));
+        }
+
+        //if nothing to add - we visited all;
+        if (queue.isEmpty())
+            return;
+
+        //filtering out visited nodes
+        var nextNodeEntry = queue.remove();
+        while (!queue.isEmpty() && graph.containsNode(nextNodeEntry.node)) {
+            nextNodeEntry = queue.remove();
+        }
+
+        var nextNode = nextNodeEntry.node;
+        if (!graph.nodes.containsKey(nextNode.label)) {
+            graph.addNode(nextNode.label);
+            graph.addEdge(node.label, nextNode.label, nextNodeEntry.priority);
+            getMinSpanningTree(nextNode, graph, queue);
+        }
+    }
+
+    private boolean containsNode(Node node) {
+        return nodes.containsKey(node.label);
     }
 
     public void print() {
